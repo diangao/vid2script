@@ -33,10 +33,16 @@ def main():
         help="Path to the output transcript file (e.g., transcript.txt or transcript.json)"
     )
     parser.add_argument(
-        "--chunk-duration", 
+        "--min-duration", 
         type=int, 
-        default=5, 
-        help="Duration of each video chunk in seconds."
+        default=10, 
+        help="Minimum duration of each video chunk in seconds."
+    )
+    parser.add_argument(
+        "--max-duration", 
+        type=int, 
+        default=25, 
+        help="Maximum duration of each video chunk in seconds."
     )
     parser.add_argument(
         "--frames-per-chunk", 
@@ -57,7 +63,8 @@ def main():
         # 3. Instantiate all modules
         logging.info("Initializing modules...")
         chunker = VideoChunker(
-            chunk_duration=args.chunk_duration,
+            min_duration=args.min_duration,
+            max_duration=args.max_duration,
             frames_per_chunk=args.frames_per_chunk
         )
         builder = PromptBuilder()
@@ -82,8 +89,8 @@ def main():
             
             tqdm.write(f"Processing chunk at {timestamp:.2f}s...")
 
-            # Get dialogue from Claude with context awareness
-            dialogue = runner.generate_dialogue(frames, f"{timestamp:.2f}s", context=previous_dialogue)
+            # Get dialogue from Claude with context awareness and duration
+            dialogue = runner.generate_dialogue(frames, f"{timestamp:.2f}s", context=previous_dialogue, duration=chunk.duration)
 
             if dialogue:
                 full_transcript.append({

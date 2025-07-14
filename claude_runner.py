@@ -38,7 +38,7 @@ class ClaudeRunner:
         self.model = "claude-3-5-sonnet-20241022"
         self.max_tokens = 1024
 
-    def generate_dialogue(self, frames: List[str], timestamp: str = "", context: Optional[str] = None) -> Optional[str]:
+    def generate_dialogue(self, frames: List[str], timestamp: str = "", context: Optional[str] = None, duration: Optional[float] = None) -> Optional[str]:
         """
         Generate a dialogue script from video frames using Claude Vision API.
         
@@ -46,6 +46,7 @@ class ClaudeRunner:
             frames (List[str]): List of base64-encoded image frames.
             timestamp (str): Timestamp for this video segment (for logging purposes).
             context (Optional[str]): Previous dialogue content to avoid repetition.
+            duration (Optional[float]): Duration of the video segment in seconds.
             
         Returns:
             Optional[str]: Generated dialogue script, or None if failed.
@@ -55,8 +56,8 @@ class ClaudeRunner:
             return None
             
         try:
-            # Build the prompt content with context
-            user_content = self.prompt_builder.build(frames, context=context)
+            # Build the prompt content with context and duration
+            user_content = self.prompt_builder.build(frames, context=context, duration=duration)
             
             # Make API call with retries
             response = self._call_claude_with_retry(user_content, timestamp)

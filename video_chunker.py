@@ -2,6 +2,7 @@ import cv2
 import base64
 import numpy as np
 import os
+import random
 from typing import List, Dict, Any
 from dataclasses import dataclass
 
@@ -9,13 +10,15 @@ from dataclasses import dataclass
 class VideoChunk:
     start_time: float
     end_time: float
+    duration: float  # Actual duration of this chunk
     frames: List[str]  # Base64 encoded frames
     formatted_timestamp: str
 
 
 class VideoChunker:
-    def __init__(self, chunk_duration: float = 5.0, frames_per_chunk: int = 3):
-        self.chunk_duration = chunk_duration
+    def __init__(self, min_duration: float = 10.0, max_duration: float = 25.0, frames_per_chunk: int = 3):
+        self.min_duration = min_duration
+        self.max_duration = max_duration
         self.frames_per_chunk = frames_per_chunk
 
     def _encode_frame(self, frame: np.ndarray) -> str:
@@ -43,7 +46,9 @@ class VideoChunker:
         current_time = 0.0
         
         while current_time < duration:
-            end_time = min(current_time + self.chunk_duration, duration)
+            # Generate random chunk duration between min and max
+            random_duration = random.uniform(self.min_duration, self.max_duration)
+            end_time = min(current_time + random_duration, duration)
             chunk = self._extract_chunk_frames(cap, current_time, end_time, fps)
             if chunk.frames:
                 chunks.append(chunk)
@@ -69,6 +74,7 @@ class VideoChunker:
         return VideoChunk(
             start_time=start_time,
             end_time=end_time,
+            duration=chunk_duration,
             frames=frames,
             formatted_timestamp=self._format_timestamp(start_time)
         )
