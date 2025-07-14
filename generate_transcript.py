@@ -73,6 +73,7 @@ def main():
             return
 
         full_transcript = []
+        previous_dialogue = None  # Track context from previous segments
         
         # Using tqdm for a progress bar
         for chunk in tqdm(video_chunks, desc="Generating dialogue for chunks"):
@@ -81,18 +82,16 @@ def main():
             
             tqdm.write(f"Processing chunk at {timestamp:.2f}s...")
 
-            # Build the prompt
-            system_prompt = builder.system_prompt
-            user_content = builder.build(frames)
-
-            # Get dialogue from Claude
-            dialogue = runner.generate_dialogue(frames, f"{timestamp:.2f}s")
+            # Get dialogue from Claude with context awareness
+            dialogue = runner.generate_dialogue(frames, f"{timestamp:.2f}s", context=previous_dialogue)
 
             if dialogue:
                 full_transcript.append({
                     "timestamp": timestamp,
                     "dialogue": dialogue
                 })
+                # Update context for next iteration
+                previous_dialogue = dialogue
             else:
                 tqdm.write(f"Skipping chunk at {timestamp:.2f}s due to empty dialogue response.")
 
