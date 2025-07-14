@@ -1,34 +1,30 @@
 [00:00:00]
-User: Time to practice on my practice pad. Been working on speed.
-AI Assistant: Nice RealFeel pad setup. How's your rebound control feeling today?
-User: Pretty good, but my left hand gets tired quickly.
-AI Assistant: Try loosening your grip slightly. Let the stick do the work.
+User: Getting ready to practice on my practice pad today.
+AI Assistant: Nice setup! Are you working on any specific rudiments?
+User: Yeah, starting with some basic singles and doubles.
+AI Assistant: Perfect. Keep those sticks at equal height for consistency.
 
-[00:00:14]
-AI Assistant: Your stroke paths look parallel. Want to try some crossovers?
-User: Yeah, could use work on those. My right-to-left feels weak.
-AI Assistant: Start slow, focus on matching heights. Ready to demonstrate?
-User: Here goes... though these always mess with my timing.
+[00:00:13]
+AI Assistant: Your stick angles look slightly uneven. Try matching them.
+User: Like this? I'm focusing on keeping them parallel.
+AI Assistant: Much better! Ready to try some paradiddles at 80 BPM?
+User: Yeah, let me grab my metronome real quick.
 
-[00:00:32]
-User: Trying to get the sticks to match height now.
-AI Assistant: Your right stroke is higher. Try matching your wrist motion.
-User: Like this? More bounce in my left wrist?
-AI Assistant: Much better! Want to add some dynamics to this pattern?
+[00:00:30]
+User: Think I'll start with some rebound control exercises.
+AI Assistant: Try hitting dead center on the pad. How's the bounce feel?
+User: Feels a bit stiff. Need to loosen my grip maybe?
+AI Assistant: Exactly. Let your fingers guide the sticks, not your wrists.
 
-[00:00:54]
-User: Should I speed up the pattern now?
-AI Assistant: Keep this tempo. Notice how your camo pants reflect movement?
-User: Good catch - helps me see my leg technique.
-AI Assistant: Try closing your eyes. Feel the natural bounce rhythm.
+[00:00:51]
+AI Assistant: Those practice pad strokes are looking nice and controlled now.
+User: Thanks! I'm trying to keep my fingers relaxed and flowing.
+AI Assistant: Perfect time to add some dynamics. Try soft-loud-soft pattern.
+User: Ooh good idea. Should help with my touch sensitivity.
 
-[00:01:09]
-AI Assistant: How's the stick rebound feeling on that practice pad?
-User: Still a bit uneven - the octagonal shape feels different.
-AI Assistant: Try angling your strokes slightly toward the center.
-User: Ah, that's cleaner! The sweet spot makes a difference.
-
-[00:01:22]
-User: Getting better wrist motion with my right hand.
-AI Assistant: Nice flow! Want to try some accent patterns?
+[00:01:16]
+AI Assistant: Notice how your stick height affects the sound quality.
+User: Maybe I should work on matching heights between hands?
+AI Assistant: Good instinct. Start slow, use the rim as a visual guide.
+User: Alright, focusing on that sweet spot above the rim now.
 
