@@ -13,23 +13,28 @@ class PromptBuilder:
 You are a professional scriptwriter. Your task is to watch a series of consecutive video frames and generate a natural dialogue script based solely on these visual inputs.
 
 **Character Roles:**
-- **User:** The person filming/recording this video (first-person perspective). Casual tone, may comment on what they're doing, express thoughts about their own actions, or ask for guidance.
-- **AI Assistant:** Professional tone, explanatory, proactively highlights key points about what the User is doing or what's visible in their recording, informative, and can't make any factual mistakes.
+- **User:** The person filming/recording this video (first-person perspective). Casual tone, may comment on what they're doing, express thoughts about their own actions, or ask for guidance. Should respond naturally to AI's suggestions and engage in two-way conversation.
+- **AI Assistant:** Professional yet conversational tone. Should provide real-time feedback, suggestions, and observations about the User's actions. Can ask questions to understand the User's goals and provide contextual guidance.
 
 **Rules:**
 1. **Strictly Based on Visual Information:** The script must strictly revolve around the people, objects, actions, and scenes shown in the provided images. No imagined content or information not present in the images is allowed.
-2. **Natural Dialogue:** Generate a complete conversation with realistic speaking pace. Each exchange should feel natural and connected. The User should respond to the AI Assistant's comments, creating a flowing dialogue. Each sentence should be speakable within 3-5 seconds at normal conversational speed.
-3. **Context Awareness:** If context from previous dialogue is provided, avoid repeating explanations of objects or concepts already mentioned. Instead, focus on new actions, environmental details, or previously unmentioned objects.
+2. **Interactive Dialogue:** Create a natural two-way conversation where both parties actively engage. The AI should ask relevant questions, offer suggestions, and the User should respond with their thoughts, preferences, or reactions. Include moments of:
+   - AI asking for User's opinion or goals
+   - User reacting to AI's observations  
+   - AI providing contextual suggestions based on what the User is doing
+   - Natural back-and-forth that feels like real-time coaching/interaction
+3. **Context Awareness:** This is a continuous conversation throughout the video. Never re-introduce equipment, setup, or concepts already discussed. Treat each segment as the next moment in an ongoing coaching session where both parties already know the context.
 4. **Specified Format:** Output must strictly follow the format below, containing only character names and lines, without any additional explanations, titles, or preamble.
    Example:
-   User: I'm working on this drum setup today.
-   AI Assistant: I can see you're practicing on a RealFeel pad - the octagonal design helps prevent rotation during your stick work.
-   User: Yeah, I noticed it stays put better than my old round one.
-   AI Assistant: That stability really makes a difference for consistent technique practice.
+   User: Working on double strokes today.
+   AI Assistant: Grip looks solid. What tempo?
+   User: Trying 120 BPM.
+   AI Assistant: Nice. Relax that left wrist more.
 
 **Speaking Speed Guidelines:**
 - Average speaking speed: 3-4 words per second (180-240 words per minute)
 - Each sentence should typically take 3-5 seconds to speak
+- Keep sentences SHORT and punchy - no more than 10-12 words per sentence
 - Prioritize concise, natural expressions over lengthy explanations
 
 **Task:**
@@ -56,32 +61,57 @@ Please analyze the following series of images and, following all the rules above
         duration_guidance = ""
         if duration:
             if duration <= 12:
-                duration_guidance = f"Generate a very brief dialogue (1-2 short exchanges, max {int(duration//4)} sentences total) that can realistically be spoken in {duration:.1f} seconds at normal speed."
+                duration_guidance = f"Generate a very brief interactive dialogue (1 exchange: User says something short → AI gives quick feedback/question). Maximum 2 sentences total. Must fit in {duration:.1f} seconds at normal speed."
             elif duration <= 20:
-                duration_guidance = f"Generate a moderate dialogue (2-3 exchanges, max {int(duration//3.5)} sentences total) that can realistically be spoken in {duration:.1f} seconds at normal speed."
+                duration_guidance = f"Generate a short interactive dialogue (1-2 exchanges). Maximum 4 sentences total. Must fit in {duration:.1f} seconds at normal speed."
             else:
-                duration_guidance = f"Generate a longer dialogue (3-4 exchanges, max {int(duration//3)} sentences total) that can realistically be spoken in {duration:.1f} seconds at normal speed."
+                duration_guidance = f"Generate a moderate interactive dialogue (2-3 exchanges). Maximum 6 sentences total. Must fit in {duration:.1f} seconds at normal speed."
         
         if context:
-            # Extract key items mentioned in previous context to avoid repetition
+            # Extract key topics to avoid repetition while keeping context concise
+            # Take recent lines but also extract key mentioned items
             context_lines = context.strip().split('\n')
-            recent_context = '\n'.join(context_lines[-4:]) if len(context_lines) > 4 else context
+            recent_lines = context_lines[-8:] if len(context_lines) > 8 else context_lines
+            recent_context = '\n'.join(recent_lines)
+            
+            # Extract frequently mentioned words to avoid repetition
+            context_text = ' '.join(context_lines)
+            words = context_text.lower().split()
+            # Common objects/equipment that might be repeatedly mentioned
+            common_items = []
+            for word in words:
+                if (words.count(word) >= 2 and len(word) > 3 and 
+                    word not in ['user', 'assistant', 'your', 'that', 'this', 'with', 'good', 'nice', 'great']):
+                    if word not in common_items:
+                        common_items.append(word)
+            
+            items_mentioned = ', '.join(common_items[:8]) if common_items else "setup elements"
             
             text_prompt = f"""Please create a dialogue script based on these consecutive images.
 
-**Recent conversation context (avoid repeating these topics):**
+**RECENT CONVERSATION:**
 {recent_context}
 
-**Instructions:** Continue the natural flow of conversation. Focus on NEW actions, environmental details, or previously unmentioned objects. Do NOT re-explain items already discussed in the context above. Build on the existing conversation naturally.
+**ALREADY DISCUSSED:** {items_mentioned}
 
-**Dialogue Length & Speed:** {duration_guidance} Remember: each sentence should be short enough to speak naturally in 3-5 seconds."""
+**CRITICAL:** This is CONTINUING the above conversation. DO NOT re-mention the items listed above. Both User and AI already know the setup. Focus on NEW actions, progress, or different aspects.
+
+**Interactive Elements:** Include AI questions, User responses, suggestions, and natural reactions. Make it feel like real-time coaching/feedback.
+
+**Dialogue Length & Speed:** {duration_guidance} CRITICAL: Keep each sentence under 10-12 words. Each line should take only 3-4 seconds to speak."""
         else:
             # First segment, no context needed
             base_instruction = "Please create a dialogue script based on these consecutive images."
             if duration_guidance:
-                text_prompt = f"{base_instruction}\n\n**Dialogue Length & Speed:** {duration_guidance} Remember: each sentence should be short enough to speak naturally in 3-5 seconds."
+                text_prompt = f"""{base_instruction}
+
+**Interactive Elements:** Include AI questions, User responses, suggestions, and natural reactions. Make it feel like real-time coaching/feedback.
+
+**Dialogue Length & Speed:** {duration_guidance} CRITICAL: Keep each sentence under 10-12 words. Each line should take only 3-4 seconds to speak."""
             else:
-                text_prompt = base_instruction
+                text_prompt = f"""{base_instruction}
+
+**Interactive Elements:** Include AI questions, User responses, suggestions, and natural reactions. Make it feel like real-time coaching/feedback."""
 
         user_content = [
             {
