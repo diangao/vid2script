@@ -1,0 +1,32 @@
+[00:00:00]
+User: Hey, I'm heading out for a quick ride. Let's see how this goes.
+AI: Nice, looks like you've got a red electric scooter there. I see the brand is "Segway" on the handlebars.
+User: Oh yeah, I just got this. -- Wait, is that a bike lane up ahead?
+AI: You're right, I see the white line marking the bike lane. Looks like a good spot to test out your new ride.
+
+[00:00:14]
+User: Ah nice, a bike lane up ahead. That'll be perfect to test this out.
+AI: Yeah, that's ideal. -- Oh wait, there's a speed limit sign too. Looks like 25 mph. Should give you plenty of room to zip around.
+User: Sweet, let's do this!
+
+[00:00:28]
+User: Oh nice, looks like a straightaway ahead. Perfect to test the speed on this thing.
+AI: Definitely, that stretch looks smooth. -- Hey, there's a speed limit sign up ahead, 25 mph. Might want to keep an eye on that.
+User: Good call, don't want any tickets on the first ride. Let's see how it handles!
+AI: Sounds good, give it some throttle and let me know how it feels. Just be careful out there.
+
+[00:00:45]
+User: Alright, let's see how this baby handles the straightaway.
+AI: Oh nice, the road looks perfect ahead. -- Wait, is that a speed bump coming up? Watch out for that.
+User: Good eye, thanks for the heads up. Let's take it easy through here.
+AI: Definitely, safety first. Looking smooth so far though!
+
+[00:00:57]
+User: Oh, looks like the road opens up ahead. Time to test out the speed on this bike!
+AI: Nice, that straightaway looks perfect. -- Wait, I think I see a speed limit sign up there, 30 mph. Might want to keep an eye on that.
+User: Good catch, don't want any trouble on the first ride. Let's see how she handles!
+
+[00:01:18]
+User: Whoa, the road is pretty bumpy up ahead.
+AI: Oh yeah, I see some cracks and potholes there. Might want to slow down a bit and watch your line.
+

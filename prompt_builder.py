@@ -2,27 +2,45 @@ from typing import List, Dict, Any, Optional
 
 class PromptBuilder:
     """
-    Constructs a prompt for the Claude Vision API to generate a dialogue script
-    based on video frames.
+    Constructs a prompt for the Claude Vision API to generate casual, 
+    friendly conversations between a User (filming first-person) and an AI 
+    friend watching together, based on video frames.
     """
     def __init__(self):
         """
         Initializes the PromptBuilder with a predefined system prompt.
         """
         self.system_prompt = """
-You are a professional scriptwriter. Your task is to watch a series of consecutive video frames and generate a natural dialogue script based solely on these visual inputs.
+You are creating a casual, friendly conversation between two people watching the same video together in real-time. This should feel like natural internet friends chatting while watching something together.
 
 **Character Roles:**
-- **User:** The person filming/recording this video (first-person perspective). Casual tone, may comment on what they're doing, express thoughts about their own actions, or ask for guidance. Should respond naturally to AI's suggestions and engage in two-way conversation.
-- **AI Assistant:** Professional yet conversational tone. Should provide real-time feedback, suggestions, and observations about the User's actions. Can ask questions to understand the User's goals and provide contextual guidance.
+- **User:** The person filming/recording this video (first-person perspective). Casual, conversational tone. Often asks obvious questions, makes simple observations, or comments on what they're doing. Can be a bit naive or miss details that are obvious to others.
+- **AI:** A knowledgeable friend who can also see everything in the video. Very observant, informative, and helpful. Notices details the User might miss, reads text in images, identifies objects/brands/locations. Sometimes gets excited and interrupts to point things out. Never makes factual errors about what's visible.
 
-**CRITICAL CONTENT REQUIREMENTS:**
-1. **30% Visual Description**: AT LEAST 30% of the dialogue must be direct descriptions of what you see in the images. The AI Assistant should actively describe objects, actions, colors, positions, movements, and details visible in the frames.
-   - Good: "I see you're holding a red drumstick."
-   - Good: "The practice pad looks worn on the left side."
-   - Good: "Your hand position changed from the last frame."
+**CONVERSATION STYLE:**
+- Casual, friendly internet chat vibe - like two friends on voice chat
+- Natural interruptions and overlapping thoughts (use "-- Oh wait" "-- Actually" "-- Hold on")
+- Conversational fillers and reactions ("Oh cool", "Wait what", "Haha yeah"), but don't overdo it
+- User asks obvious/simple questions, AI provides informative but friendly answers
+- Both can get excited, surprised, or confused naturally
+- No gender assumptions - keep language neutral
 
-2. **70% Interactive Coaching**: The remaining dialogue focuses on guidance, questions, and reactions related to the visual content.
+**AI CAPABILITIES & REQUIREMENTS:**
+- Must read and mention any visible text (signs, labels, brands, foreign text on packages, etc.)
+- Identify specific objects, colors, brands, locations when visible
+- Provide context and background info naturally woven into chat
+- Never make factual errors about what's actually shown
+- Be more informative than the User, but in a casual "oh btw" way
+
+**CONTENT DISTRIBUTION:**
+1. **30% Visual Observations**: AI should constantly point out details - "I see...", "Oh that's...", "Notice how..."
+2. **70% Natural Chat**: Questions, reactions, explanations, casual banter
+
+**NATURAL INTERRUPTION PATTERNS:**
+Include 2-3 interruptions per longer conversation:
+- AI interrupting: "Wait -- is that a [specific brand]?"
+- User interrupting: "Oh -- what's that thing there?"
+- Mid-sentence clarifications: "This looks like -- oh wait, it's actually..."
 
 **Rules:**
 1. **Strictly Based on Visual Information:** The script must strictly revolve around the people, objects, actions, and scenes shown in the provided images. No imagined content or information not present in the images is allowed.
@@ -38,15 +56,30 @@ You are a professional scriptwriter. Your task is to watch a series of consecuti
    AI Assistant: Grip looks solid. What tempo?
    User: Trying 120 BPM.
    AI Assistant: Nice. Relax that left wrist more.
+1. **Only describe what's actually visible** - no speculation or imagination
+2. **Read any text you can see** - signs, labels, packaging, etc. and naturally mention it
+3. **Continuous conversation** - this is ongoing, don't re-introduce things already discussed
+4. **First-person perspective** - User is experiencing this live, AI is watching with them
+5. **Keep it real** - like actual friends casually chatting, not formal instruction
 
 **STRICT TIMING CONSTRAINTS:**
-- Maximum 2-3 words per second (150-190 words per minute) - A BIT SLOWER than normal speech
-- Total dialogue must fit comfortably within the provided time duration
-- Use SHORT, punchy phrases - prioritize brevity over completeness
-- If in doubt, make it SHORTER
+- Maximum 2-3 words per second (140-180 words per minute) - A BIT SLOWER than normal speech, conversational pace
+- Total dialogue must fit comfortably within provided time duration  
+- Use short, casual phrases - "Yeah that's..." "Oh cool..." "Wait what..."
+- If unsure, make it shorter and more casual
+
+**OUTPUT FORMAT:**
+User: [casual comment/question]
+AI: [informative but friendly response]
+
+Example style:
+User: What's this thing I'm holding?
+AI: Oh that's a -- wait, looks like a Roland practice pad actually.
+User: Haha yeah, wasn't sure.
+AI: See that logo on the bottom? Classic drum practice gear.
 
 **Task:**
-Please analyze the following series of images and, following all the rules above, generate a dialogue script between the "User" (the person filming/recording) and "AI Assistant". Remember: the User is experiencing this from a first-person perspective, so their comments should reflect their own actions and viewpoint.
+Generate a natural, casual conversation based on the video frames. Remember: User is filming/experiencing this first-person, AI can see everything too and should point out details the User might miss.
 """
 
     def build(self, frames: List[str], context: Optional[str] = None, duration: Optional[float] = None) -> List[Dict[str, Any]]:
@@ -55,12 +88,12 @@ Please analyze the following series of images and, following all the rules above
 
         Args:
             frames (List[str]): A list of Base64 encoded frame strings.
-            context (Optional[str]): Previous dialogue content to provide context and avoid repetition.
-            duration (Optional[float]): Duration of the video segment in seconds to adjust dialogue length.
+            context (Optional[str]): Previous casual conversation content to maintain flow and avoid repetition.
+            duration (Optional[float]): Duration of the video segment in seconds to adjust conversation length.
 
         Returns:
             List[Dict[str, Any]]: A list of content blocks formatted for the
-                                  Claude API.
+                                  Claude API to generate casual conversations.
         """
         if not frames:
             raise ValueError("Frames list cannot be empty.")
@@ -72,11 +105,11 @@ Please analyze the following series of images and, following all the rules above
             max_words = int(duration * 2.5)
             
             if duration <= 12:
-                duration_guidance = f"STRICT LIMIT: Generate ONLY 1 exchange (User + AI). Maximum {max_words} words total. Must include at least 1 visual observation. Target: {duration:.1f} seconds at 2.5 words/second."
+                duration_guidance = f"TIMING: Keep it short! Just 1 quick exchange (User + AI). Max {max_words} words total. AI should point out something they notice. Target: {duration:.1f} seconds."
             elif duration <= 20:
-                duration_guidance = f"STRICT LIMIT: Generate maximum 2 exchanges. Maximum {max_words} words total. Must include 30% visual descriptions. Target: {duration:.1f} seconds at 2.5 words/second."
+                duration_guidance = f"TIMING: 2 exchanges max. Max {max_words} words total. Keep it casual and conversational. Target: {duration:.1f} seconds."
             else:
-                duration_guidance = f"STRICT LIMIT: Generate maximum 3 exchanges. Maximum {max_words} words total. Must include 30% visual descriptions. Target: {duration:.1f} seconds at 2.5 words/second."
+                duration_guidance = f"TIMING: Up to 3 exchanges. Max {max_words} words total. Natural chat flow with some visual observations. Target: {duration:.1f} seconds."
         
         if context:
             # Extract key topics to avoid repetition while keeping context concise
@@ -98,37 +131,41 @@ Please analyze the following series of images and, following all the rules above
             
             items_mentioned = ', '.join(common_items[:8]) if common_items else "setup elements"
             
-            text_prompt = f"""Please create a dialogue script based on these consecutive images.
+            text_prompt = f"""Continue this casual conversation based on these new video frames.
 
-**RECENT CONVERSATION:**
+**RECENT CHAT:**
 {recent_context}
 
-**ALREADY DISCUSSED:** {items_mentioned}
+**YOU'VE ALREADY TALKED ABOUT:** {items_mentioned}
 
-**CRITICAL:** This is CONTINUING the above conversation. DO NOT re-mention the items listed above. Both User and AI already know the setup. Focus on NEW actions, progress, or different aspects.
+**IMPORTANT:** Keep the conversation flowing naturally! Don't repeat stuff you've already covered. Focus on what's happening NOW or new things you notice.
 
-**VISUAL DESCRIPTION REQUIREMENT:** 30% of your dialogue MUST describe what you see in the current images - colors, positions, movements, objects, changes from previous frames.
+**WHAT AI SHOULD DO:** Point out details, read any text you see, mention brands/objects. Be observant but casual about it.
 
-**Interactive Elements:** Include AI questions, User responses, suggestions, and natural reactions. Make it feel like real-time coaching/feedback.
+**CONVERSATION VIBE:** Natural interruptions, casual reactions, User might ask obvious questions, AI gives friendly informative answers.
 
-**TIMING CONSTRAINTS:** {duration_guidance} CRITICAL: Maximum 6-8 words per sentence. Prioritize BREVITY over completeness."""
+**{duration_guidance}** Keep sentences short and conversational - like texting friends."""
         else:
             # First segment, no context needed
-            base_instruction = "Please create a dialogue script based on these consecutive images."
+            base_instruction = "Start a casual conversation based on these video frames."
             if duration_guidance:
                 text_prompt = f"""{base_instruction}
 
-**VISUAL DESCRIPTION REQUIREMENT:** 30% of your dialogue MUST describe what you see in the images - objects, colors, positions, movements, specific details visible in the frames.
+**WHAT'S HAPPENING:** User is filming this first-person, AI can see everything too. This is the start of their chat.
 
-**Interactive Elements:** Include AI questions, User responses, suggestions, and natural reactions. Make it feel like real-time coaching/feedback.
+**AI'S JOB:** Be observant! Point out details, read any text you can see, identify objects/brands naturally. Don't make factual errors.
 
-**TIMING CONSTRAINTS:** {duration_guidance} CRITICAL: Maximum 6-8 words per sentence. Prioritize BREVITY over completeness."""
+**CONVERSATION STYLE:** Casual and friendly - like internet friends watching together. User might ask simple/obvious questions, AI gives helpful but casual answers.
+
+**{duration_guidance}** Short, natural sentences. Include some interruptions or casual reactions."""
             else:
                 text_prompt = f"""{base_instruction}
 
-**VISUAL DESCRIPTION REQUIREMENT:** 30% of your dialogue MUST describe what you see in the images - objects, colors, positions, movements, specific details visible in the frames.
+**WHAT'S HAPPENING:** User is filming this first-person, AI can see everything too. This is the start of their chat.
 
-**Interactive Elements:** Include AI questions, User responses, suggestions, and natural reactions. Make it feel like real-time coaching/feedback."""
+**AI'S JOB:** Be observant! Point out details, read any text you can see, identify objects/brands naturally. Don't make factual errors.
+
+**CONVERSATION STYLE:** Casual and friendly - like internet friends watching together. User might ask simple/obvious questions, AI gives helpful but casual answers."""
 
         user_content = [
             {
@@ -179,7 +216,7 @@ if __name__ == '__main__':
     print(f"\nTotal content blocks: {len(prompt_content)}")
     
     # Test with context and duration (subsequent segment)
-    context_text = "User: What's this?\nAI Assistant: This is a practice pad used for drum practice."
+    context_text = "User: What's this?\nAI: Oh that's a practice pad for drums."
     prompt_content_with_context = builder.build(frames_list, context=context_text, duration=18.5)
     
     print("\n--- User Content (for API call - With Context) ---")

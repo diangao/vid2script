@@ -1,0 +1,35 @@
+[00:00:00]
+User: Whoa, look at this mess. What's going on here?
+AI: Hmm, seems to be a construction site -- I see piles of bricks and rubble. Oh, and that sign says "Ke3".
+User: Huh, wonder what they're building.
+AI: Good question. Let's keep watching, this looks interesting!
+
+[00:00:10]
+User: looks like some construction work going on here. I wonder what they're building.
+AI: Yeah, lots of bricks and tools scattered around. -- Oh, see that guy over there carrying more bricks? Looks like they're probably working on some kind of masonry project.
+User: Hmm, interesting. The whole area looks pretty messy.
+AI: Definitely a work in progress. I can see a few exposed pipes and rebar too. Seems like they're in the middle of major renovations or new construction.
+User: Hope they get it cleaned up soon. This looks kinda chaotic.
+AI: You said it. All those loose bricks and debris could be a safety hazard. Hopefully they keep the site tidy as the project moves forward.
+
+[00:00:33]
+User: Wait, what's that gray stuff in that bowl?
+AI: Oh, good catch. Looks like some kind of cement or mortar mix they're preparing. Probably to help bind those bricks and stones together.
+User: Ah I see, makes sense. Looks messy to work with.
+AI: Yeah, that mortar can get pretty gritty. But it's an essential part of masonry construction. Helps everything stay sturdy and in place.
+User: Cool, cool. Hopefully they know what they're doing over there.
+AI: Haha yeah, no room for mistakes when you're building something big. But the tools and materials look professional. I bet they've done this before.
+
+[00:00:55]
+User: looks like they're really digging into this construction project. Those piles of bricks and stones are massive.
+AI: Yeah, this is a big job. I see some rebar and plywood over there too - looks like they're laying the foundation for something substantial.
+User: Huh, wonder what they're building? I'm curious to see how it all comes together.
+AI: Me too! Let's keep watching, I bet it'll start taking shape soon. Oh, and there's some big machines off in the distance - looks like they've got the heavy equipment to get this done.
+User: Nice, that'll make the heavy lifting easier. Alright, let's see what happens next!
+
+[00:01:16]
+User: Lots of tools and materials scattered around.
+AI: Yeah, looks like a full-scale construction project. I see some metal rods and wooden boards - probably reinforcing the foundation. And check out those red bricks, high-quality stuff.
+User: Interesting. Can't wait to see what they end up building here.
+AI: Same! Seems like a big undertaking. Oh, and there's a dumpster over there too - gotta keep the site clean during construction.
+

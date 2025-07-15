@@ -59,7 +59,7 @@ def generate_output_filename(video_path: str, output_dir: str = None) -> str:
         str: Generated transcript filename
     """
     video_name = Path(video_path).stem  # Get filename without extension
-    transcript_filename = f"transcript_{video_name}.txt"
+    transcript_filename = f"{video_name}.txt"
     
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
@@ -149,6 +149,7 @@ def main():
     )
     parser.add_argument(
         "--output-dir", 
+        "--output",
         type=str, 
         help="Output directory for transcript files. If not specified, uses same directory as input videos."
     )
