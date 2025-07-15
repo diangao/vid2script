@@ -13,12 +13,17 @@ class ClaudeRunner:
     """
     Handles the interaction with the Anthropic Claude API for generating dialogue scripts.
     """
-    def __init__(self, api_key: Optional[str] = None, max_retries: int = 3, retry_delay: float = 1.0):
+    def __init__(self, api_key: Optional[str] = None, model: str = "claude-3-haiku-20240307", max_retries: int = 3, retry_delay: float = 1.0):
         """
         Initializes the ClaudeRunner.
 
         Args:
             api_key (Optional[str]): API key for Anthropic API. If None, reads from environment.
+            model (str): Claude model to use. Defaults to claude-3-haiku-20240307 (cheapest with vision).
+                        Options: 
+                        - claude-3-haiku-20240307 (cheapest, good performance)
+                        - claude-3-5-sonnet-20241022 (most capable, more expensive)
+                        - claude-3-opus-20240229 (highest quality, most expensive)
             max_retries (int): Maximum number of retries for failed API calls.
             retry_delay (float): Delay between retries in seconds.
         
@@ -34,9 +39,18 @@ class ClaudeRunner:
         self.max_retries = max_retries
         self.retry_delay = retry_delay
         
-        # Use the latest Claude model with vision capabilities
-        self.model = "claude-3-5-sonnet-20241022"
+        # Model configuration - now defaults to Haiku for cost efficiency
+        self.model = model
         self.max_tokens = 1024
+        
+        # Log the model being used for transparency
+        model_costs = {
+            "claude-3-haiku-20240307": "最便宜 💰",
+            "claude-3-5-sonnet-20241022": "中等价格 💰💰", 
+            "claude-3-opus-20240229": "最贵 💰💰💰"
+        }
+        cost_info = model_costs.get(self.model, "未知")
+        logger.info(f"使用模型: {self.model} ({cost_info})")
 
     def generate_dialogue(self, frames: List[str], timestamp: str = "", context: Optional[str] = None, duration: Optional[float] = None) -> Optional[str]:
         """

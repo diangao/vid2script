@@ -56,13 +56,38 @@ The tool processes videos through a multi-step pipeline:
 
 Run the script from your terminal:
 ```bash
-python generate_transcript.py --input path/to/video.mp4 --output path/to/transcript.txt
+python generate_transcript.py --input path/to/video.mp4 --output-dir path/to/output/
 ```
 
 ### Command-Line Arguments
 
--   `--input` (**required**): Path to the input video file.
--   `--output` (**required**): Path for the output transcript file (`.txt` or `.json`).
+-   `--input` (**required**): Path to video file or directory containing video files.
+-   `--output-dir` (optional): Output directory for transcript files. If not specified, uses same directory as input videos.
+-   `--model` (optional): Claude model to use. Options:
+    -   `claude-3-haiku-20240307` (**default**, cheapest 💰)
+    -   `claude-3-5-sonnet-20241022` (balanced performance/cost 💰💰)
+    -   `claude-3-opus-20240229` (highest quality, most expensive 💰💰💰)
 -   `--min-duration` (optional): Minimum duration of a video chunk in seconds (Default: 10).
 -   `--max-duration` (optional): Maximum duration of a video chunk in seconds (Default: 25).
 -   `--frames-per-chunk` (optional): Number of frames to extract per chunk (Default: 3).
+-   `--max-videos` (optional): Maximum number of videos to process (useful for testing).
+
+### Cost Optimization Tips 💰
+
+-   **Use Haiku by default**: Claude 3 Haiku is now the default model - it's much cheaper than Sonnet while still providing good vision capabilities.
+-   **Test with smaller chunks**: Use `--max-videos 1` to test on a single video first.
+-   **Adjust chunk settings**: Shorter chunks (`--max-duration 15`) mean more API calls but potentially better accuracy.
+-   **Monitor your usage**: Check your Anthropic Console regularly to track API usage and costs.
+
+### Example Usage
+
+```bash
+# Basic usage with default Haiku model (cheapest)
+python generate_transcript.py --input videos/ --output-dir transcripts/
+
+# Use higher quality model for important content
+python generate_transcript.py --input important_video.mp4 --model claude-3-5-sonnet-20241022
+
+# Test mode - process only 1 video with short chunks
+python generate_transcript.py --input videos/ --max-videos 1 --max-duration 15
+```
