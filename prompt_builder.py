@@ -11,75 +11,34 @@ class PromptBuilder:
         Initializes the PromptBuilder with a predefined system prompt.
         """
         self.system_prompt = """
-You are creating a casual, friendly conversation between two people watching the same video together in real-time. This should feel like natural internet friends chatting while watching something together.
+Create a casual conversation between User (filming while doing an activity) and AI (watching User work).
 
-**Character Roles:**
-- **User:** The person filming/recording this video (first-person perspective). Casual, conversational tone. Often asks obvious questions, makes simple observations, or comments on what they're doing. Can be a bit naive or miss details that are obvious to others.
-- **AI:** A knowledgeable friend who can also see everything in the video. Very observant, informative, and helpful. Notices details the User might miss, reads text in images, identifies objects/brands/locations. Sometimes gets excited and interrupts to point things out. Never makes factual errors about what's visible.
+**CORE REQUIREMENTS:**
+1. **SLOWER PACE** - 140-170 words per minute. Short, casual phrases. Fit dialogue within time duration.
+2. **CONTINUOUS CHAT** - When given context, continue the existing conversation. NO repetition of discussed topics.
+3. **VISUAL ACCURACY** - Only describe what's visible. Read any text you see. No speculation.
 
-**CONVERSATION STYLE:**
-- Casual, friendly internet chat vibe - like two friends on voice chat
-- Natural interruptions and overlapping thoughts (use "-- Oh wait" "-- Actually" "-- Hold on")
-- Conversational fillers and reactions ("Oh cool", "Wait what", "Haha yeah"), but don't overdo it
-- User asks obvious/simple questions, AI provides informative but friendly answers
-- Both can get excited, surprised, or confused naturally
-- No gender assumptions - keep language neutral
+**ROLES:**
+- **User:** The person filming AND doing the activity. Uses "I" language ("I'm working on...", "Let me check this..."). Casual tone, sometimes asks obvious questions about their own work.
+- **AI:** Friend watching User work and answering questions or comments. Uses "you" language ("Your bike looks...", "I think that's..."). Points out response to the user's question or comment, details, reads text, gives context. Sometimes asks questions to the user.
 
-**AI CAPABILITIES & REQUIREMENTS:**
-- Must read and mention any visible text (signs, labels, brands, foreign text on packages, etc.)
-- Identify specific objects, colors, brands, locations when visible
-- Provide context and background info naturally woven into chat
-- Never make factual errors about what's actually shown
-- Be more informative than the User, but in a casual "oh btw" way
+**STYLE:** 
+- Internet friends chatting while watching
+- Natural interruptions with "--" 
+- Reactions like "Oh cool", "Wait what"
+- 40% visual observations, 60% natural chat
 
-**CONTENT DISTRIBUTION:**
-1. **30% Visual Observations**: AI should constantly point out details - "I see...", "Oh that's...", "Notice how..."
-2. **70% Natural Chat**: Questions, reactions, explanations, casual banter
+**ANTI-REPETITION:**
+- If you discussed construction/bricks/signs already → focus on NEW details only
+- User shouldn't say "Whoa, looks messy" or "You're working on..." 
+- User should say "I'm working on..." / "Let me check..." (first-person)
+- Build on previous observations, don't restart
 
-**NATURAL INTERRUPTION PATTERNS:**
-Include 2-3 interruptions per longer conversation:
-- AI interrupting: "Wait -- is that a [specific brand]?"
-- User interrupting: "Oh -- what's that thing there?"
-- Mid-sentence clarifications: "This looks like -- oh wait, it's actually..."
+**FORMAT:**
+User: [first-person comment: "I'm doing...", "Let me check..."]
+AI: [observant response or answers to the user's question: "Good question! ...", "Your work looks...", "You're doing..."]
 
-**Rules:**
-1. **Strictly Based on Visual Information:** The script must strictly revolve around the people, objects, actions, and scenes shown in the provided images. No imagined content or information not present in the images is allowed.
-2. **Interactive Dialogue:** Create a natural two-way conversation where both parties actively engage. The AI should ask relevant questions, offer suggestions, and the User should respond with their thoughts, preferences, or reactions.
-   - AI asking for User's opinion or goals
-   - User reacting to AI's observations  
-   - AI providing contextual suggestions based on what the User is doing
-   - Natural back-and-forth that feels like real-time coaching/interaction.
-3. **Context Awareness:** This is a continuous conversation throughout the video. Never re-introduce equipment, setup, or concepts already discussed. Treat each segment as the next moment in an ongoing coaching session where both parties already know the context.
-4. **Specified Format:** Output must strictly follow the format below, containing only character names and lines, without any additional explanations, titles, or preamble.
-   Example:
-   User: Working on double strokes today.
-   AI Assistant: Grip looks solid. What tempo?
-   User: Trying 120 BPM.
-   AI Assistant: Nice. Relax that left wrist more.
-1. **Only describe what's actually visible** - no speculation or imagination
-2. **Read any text you can see** - signs, labels, packaging, etc. and naturally mention it
-3. **Continuous conversation** - this is ongoing, don't re-introduce things already discussed
-4. **First-person perspective** - User is experiencing this live, AI is watching with them
-5. **Keep it real** - like actual friends casually chatting, not formal instruction
-
-**STRICT TIMING CONSTRAINTS:**
-- Maximum 2-3 words per second (140-180 words per minute) - A BIT SLOWER than normal speech, conversational pace
-- Total dialogue must fit comfortably within provided time duration  
-- Use short, casual phrases - "Yeah that's..." "Oh cool..." "Wait what..."
-- If unsure, make it shorter and more casual
-
-**OUTPUT FORMAT:**
-User: [casual comment/question]
-AI: [informative but friendly response]
-
-Example style:
-User: What's this thing I'm holding?
-AI: Oh that's a -- wait, looks like a Roland practice pad actually.
-User: Haha yeah, wasn't sure.
-AI: See that logo on the bottom? Classic drum practice gear.
-
-**Task:**
-Generate a natural, casual conversation based on the video frames. Remember: User is filming/experiencing this first-person, AI can see everything too and should point out details the User might miss.
+Generate natural dialogue that respects the SLOWER PACE and continues previous context.
 """
 
     def build(self, frames: List[str], context: Optional[str] = None, duration: Optional[float] = None) -> List[Dict[str, Any]]:
@@ -131,41 +90,27 @@ Generate a natural, casual conversation based on the video frames. Remember: Use
             
             items_mentioned = ', '.join(common_items[:8]) if common_items else "setup elements"
             
-            text_prompt = f"""Continue this casual conversation based on these new video frames.
+            text_prompt = f"""CONTINUE this conversation based on new video frames.
 
 **RECENT CHAT:**
 {recent_context}
 
-**YOU'VE ALREADY TALKED ABOUT:** {items_mentioned}
+**ALREADY DISCUSSED:** {items_mentioned}
 
-**IMPORTANT:** Keep the conversation flowing naturally! Don't repeat stuff you've already covered. Focus on what's happening NOW or new things you notice.
+**KEY:** Focus ONLY on NEW details not mentioned before. Don't repeat observations. 
+**REMEMBER:** User is doing the activity, not observing someone else. User says "I'm doing..." not "You're doing..." or "Someone is doing..."
 
-**WHAT AI SHOULD DO:** Point out details, read any text you see, mention brands/objects. Be observant but casual about it.
-
-**CONVERSATION VIBE:** Natural interruptions, casual reactions, User might ask obvious questions, AI gives friendly informative answers.
-
-**{duration_guidance}** Keep sentences short and conversational - like texting friends."""
+**{duration_guidance}** Build on previous chat naturally."""
         else:
             # First segment, no context needed
-            base_instruction = "Start a casual conversation based on these video frames."
             if duration_guidance:
-                text_prompt = f"""{base_instruction}
+                text_prompt = f"""START a casual conversation based on these video frames.
 
-**WHAT'S HAPPENING:** User is filming this first-person, AI can see everything too. This is the start of their chat.
-
-**AI'S JOB:** Be observant! Point out details, read any text you can see, identify objects/brands naturally. Don't make factual errors.
-
-**CONVERSATION STYLE:** Casual and friendly - like internet friends watching together. User might ask simple/obvious questions, AI gives helpful but casual answers.
-
-**{duration_guidance}** Short, natural sentences. Include some interruptions or casual reactions."""
+**{duration_guidance}** User is filming while doing the activity (use "I" language). AI watches User work (use "you" language). Read any visible text."""
             else:
-                text_prompt = f"""{base_instruction}
+                text_prompt = """START a casual conversation based on these video frames.
 
-**WHAT'S HAPPENING:** User is filming this first-person, AI can see everything too. This is the start of their chat.
-
-**AI'S JOB:** Be observant! Point out details, read any text you can see, identify objects/brands naturally. Don't make factual errors.
-
-**CONVERSATION STYLE:** Casual and friendly - like internet friends watching together. User might ask simple/obvious questions, AI gives helpful but casual answers."""
+User is filming while doing the activity (use "I" language). AI watches User work (use "you" language). Read any visible text."""
 
         user_content = [
             {
